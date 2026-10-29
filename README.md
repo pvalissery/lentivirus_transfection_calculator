@@ -1,8 +1,9 @@
 # Lentivirus Transfection Calculator 🧬
 
-**TL;DR:** Tired of accidentally breaking formulas in a fragile Excel sheet every time you need to prep a lentivirus transfection? This is a zero-dependency, single-page web app that handles the math for your master mixes instantly. 
+This is a zero-dependency, single-page web app that handles the math for your transfection master mixes. 
+https://pvalissery.github.io/lentivirus_transfection_calculator/
 
-Originally based on a legacy lab Excel template, this tool calculates exact volumes for packaging plasmids (psPAX2), envelope plasmids (pMD2.G), and custom transfer plasmids based on your target DNA concentrations and scaling requirements.
+This tool calculates exact volumes for packaging plasmids (psPAX2), envelope plasmids (pMD2.G), and custom transfer plasmids based on your target DNA concentrations and scaling requirements.
 
 ## Why this exists
 Managing multiple transfer plasmids across different transfection scales usually means endless copy-pasting in spreadsheets. This app moves the workflow to a clean web UI where you can dynamically add plasmids, tweak concentrations, and get an auto-updating Master Mix recipe without the spreadsheet headache. 
@@ -19,7 +20,7 @@ Managing multiple transfer plasmids across different transfection scales usually
 * **Tailwind CSS (via CDN):** For a clean, readable, and responsive UI without maintaining a massive stylesheet.
 
 ## Usage
-You don't need to install anything or spin up a local server. 
+You don't need to install anything. 
 
 1. Clone this repository or download the source.
 2. Double-click `index.html` to open it in any modern web browser.
