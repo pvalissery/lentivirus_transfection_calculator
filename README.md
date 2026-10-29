@@ -1,4 +1,4 @@
-# Lentivirus Transfection Calculator 🧬
+# Lentivirus Transfection Calculator 
 
 This is a zero-dependency, single-page web app that handles the math for your transfection master mixes. 
 https://pvalissery.github.io/lentivirus_transfection_calculator/
