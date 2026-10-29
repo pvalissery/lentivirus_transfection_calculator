@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lentivirus Transfection Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b border-slate-200">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Lentivirus Transfection Calculator</h1>
+                <p class="text-slate-500 mt-1">Based on PV_DNA concentration protocol. Real-time master mix calculation.</p>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left Column: Settings -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Protocol Defaults -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-blue-50 border-b border-blue-100 px-5 py-3">
+                        <h2 class="text-sm font-semibold text-blue-800 uppercase tracking-wider">1. Protocol Defaults</h2>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Standard Culture Vol (ml)</label>
+                            <input type="number" id="stdVol" value="2.5" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors calc-trigger">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Opti-MEM (ul)</label>
+                            <input type="number" id="stdOpti" value="250" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors calc-trigger">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Total DNA (ug)</label>
+                            <input type="number" id="stdDNA" value="2.5" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors calc-trigger">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Transfection Reagent (ul)</label>
+                            <input type="number" id="stdReagent" value="7.5" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors calc-trigger">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experiment Settings -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-blue-600 border-b border-blue-700 px-5 py-3">
+                        <h2 class="text-sm font-semibold text-white uppercase tracking-wider">2. Experiment Settings</h2>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-900 mb-1">Target Culture Vol (ml)</label>
+                            <input type="number" id="targetVol" value="10.0" class="w-full px-3 py-2 bg-white border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors calc-trigger text-lg font-semibold text-blue-700">
+                        </div>
+                        
+                        <div class="pt-4 border-t border-slate-100 grid grid-cols-2 gap-4">
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                <div class="text-xs text-slate-500 mb-1">Scale Factor</div>
+                                <div class="text-lg font-semibold text-slate-800" id="scaleFactorDisplay">4.00</div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                <div class="text-xs text-slate-500 mb-1">Scaled Reagent (ul)</div>
+                                <div class="text-lg font-semibold text-slate-800" id="scaledReagentDisplay">30.00</div>
+                            </div>
+                            <div class="col-span-2 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                <div class="text-xs text-slate-500 mb-1">Scaled Opti-MEM Base (ul)</div>
+                                <div class="text-lg font-semibold text-slate-800" id="scaledOptiDisplay">1000.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Plasmids & Recipes -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- Plasmids -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-800 border-b border-slate-900 px-5 py-3 flex justify-between items-center">
+                        <h2 class="text-sm font-semibold text-white uppercase tracking-wider">3. Plasmids</h2>
+                        <button id="addPlasmidBtn" class="bg-blue-500 hover:bg-blue-400 text-white text-xs font-semibold py-1.5 px-3 rounded transition-colors shadow-sm">
+                            + Add Transfer Plasmid
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-slate-50 text-slate-600 font-medium border-b border-slate-200">
+                                <tr>
+                                    <th class="px-5 py-3">Type / Name</th>
+                                    <th class="px-5 py-3 w-32">Conc. (ng/ul)</th>
+                                    <th class="px-5 py-3 w-32">Target Mass (ng)</th>
+                                    <th class="px-5 py-3 w-28 bg-blue-50 text-blue-900 text-right">Vol (ul)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="plasmidsBody" class="divide-y divide-slate-100">
+                                <!-- Fixed Row 1 -->
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="px-5 py-3">
+                                        <div class="font-medium text-slate-900">psPAX2</div>
+                                        <div class="text-xs text-slate-500">Packaging Plasmid</div>
+                                    </td>
+                                    <td class="px-5 py-3">
+                                        <input type="number" id="paxConc" value="635" class="w-full px-2 py-1 bg-white border border-slate-300 rounded focus:ring-1 focus:ring-blue-500 outline-none calc-trigger">
+                                    </td>
+                                    <td class="px-5 py-3">
+                                        <input type="number" id="paxMass" value="4500" class="w-full px-2 py-1 bg-white border border-slate-300 rounded focus:ring-1 focus:ring-blue-500 outline-none calc-trigger">
+                                    </td>
+                                    <td class="px-5 py-3 bg-blue-50 text-right font-semibold text-blue-700" id="paxVol">
+                                        0.00
+                                    </td>
+                                </tr>
+                                <!-- Fixed Row 2 -->
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="px-5 py-3">
+                                        <div class="font-medium text-slate-900">pMD2.G</div>
+                                        <div class="text-xs text-slate-500">Envelope Plasmid</div>
+                                    </td>
+                                    <td class="px-5 py-3">
+                                        <input type="number" id="md2gConc" value="314" class="w-full px-2 py-1 bg-white border border-slate-300 rounded focus:ring-1 focus:ring-blue-500 outline-none calc-trigger">
+                                    </td>
+                                    <td class="px-5 py-3">
+                                        <input type="number" id="md2gMass" value="500" class="w-full px-2 py-1 bg-white border border-slate-300 rounded focus:ring-1 focus:ring-blue-500 outline-none calc-trigger">
+                                    </td>
+                                    <td class="px-5 py-3 bg-blue-50 text-right font-semibold text-blue-700" id="md2gVol">
+                                        0.00
+                                    </td>
+                                </tr>
+                                <!-- Dynamic Transfer Plasmids (Injected via JS) -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Master Mix Recipes -->
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 mb-4">4. Master Mix Recipes</h2>
+                    <div id="recipesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Recipe Cards injected here -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management for dynamic rows
+        let transferPlasmids = [
+            { id: 1, name: 'Transfer Plasmid 1', conc: 1732, mass: 5000 }
+        ];
+        let plasmidCounter = 1;
+
+        // DOM Elements
+        const DOM = {
+            stdVol: document.getElementById('stdVol'),
+            stdOpti: document.getElementById('stdOpti'),
+            stdDNA: document.getElementById('stdDNA'),
+            stdReagent: document.getElementById('stdReagent'),
+            targetVol: document.getElementById('targetVol'),
+            
+            scaleFactorDisplay: document.getElementById('scaleFactorDisplay'),
+            scaledReagentDisplay: document.getElementById('scaledReagentDisplay'),
+            scaledOptiDisplay: document.getElementById('scaledOptiDisplay'),
+            
+            paxConc: document.getElementById('paxConc'),
+            paxMass: document.getElementById('paxMass'),
+            paxVol: document.getElementById('paxVol'),
+            
+            md2gConc: document.getElementById('md2gConc'),
+            md2gMass: document.getElementById('md2gMass'),
+            md2gVol: document.getElementById('md2gVol'),
+            
+            plasmidsBody: document.getElementById('plasmidsBody'),
+            addPlasmidBtn: document.getElementById('addPlasmidBtn'),
+            recipesContainer: document.getElementById('recipesContainer')
+        };
+
+        // Render Transfer Plasmid Rows
+        function renderTransferRows() {
+            // Remove existing dynamic rows
+            document.querySelectorAll('.transfer-row').forEach(row => row.remove());
+            
+            transferPlasmids.forEach((plasmid, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'transfer-row hover:bg-slate-50 transition-colors border-t border-dashed border-slate-200';
+                
+                tr.innerHTML = `
+                    <td class="px-5 py-3">
+                        <input type="text" class="tp-name w-full bg-transparent font-medium text-slate-900 border-b border-transparent focus:border-blue-500 focus:outline-none" value="${plasmid.name}" data-index="${index}">
+                        <div class="text-xs text-slate-500 flex justify-between items-center mt-1">
+                            <span>Transfer Plasmid</span>
+                            ${transferPlasmids.length > 1 ? `<button class="text-red-500 hover:text-red-700 font-medium" onclick="removeTransferPlasmid(${index})">Remove</button>` : ''}
+                        </div>
+                    </td>
+                    <td class="px-5 py-3">
+                        <input type="number" class="tp-conc w-full px-2 py-1 bg-white border border-slate-300 rounded focus:ring-1 focus:ring-blue-500 outline-none calc-trigger" value="${plasmid.conc}" data-index="${index}">
+                    </td>
+                    <td class="px-5 py-3">
+                        <input type="number" class="tp-mass w-full px-2 py-1 bg-white border border-slate-300 rounded focus:ring-1 focus:ring-blue-500 outline-none calc-trigger" value="${plasmid.mass}" data-index="${index}">
+                    </td>
+                    <td class="px-5 py-3 bg-blue-50 text-right font-semibold text-blue-700 tp-vol">
+                        0.00
+                    </td>
+                `;
+                DOM.plasmidsBody.appendChild(tr);
+            });
+            
+            attachDynamicListeners();
+            calculateAll();
+        }
+
+        // Add a new Transfer Plasmid
+        DOM.addPlasmidBtn.addEventListener('click', () => {
+            plasmidCounter++;
+            transferPlasmids.push({
+                id: plasmidCounter,
+                name: `Transfer Plasmid ${plasmidCounter}`,
+                conc: 1000,
+                mass: 5000
+            });
+            renderTransferRows();
+        });
+
+        // Remove a Transfer Plasmid
+        window.removeTransferPlasmid = (index) => {
+            transferPlasmids.splice(index, 1);
+            renderTransferRows();
+        };
+
+        // Attach listeners to newly generated inputs
+        function attachDynamicListeners() {
+            document.querySelectorAll('.tp-name').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const idx = e.target.getAttribute('data-index');
+                    transferPlasmids[idx].name = e.target.value;
+                    renderRecipes(); // Just update labels
+                });
+            });
+            document.querySelectorAll('.tp-conc, .tp-mass').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const idx = e.target.getAttribute('data-index');
+                    if(e.target.classList.contains('tp-conc')) transferPlasmids[idx].conc = parseFloat(e.target.value) || 0;
+                    if(e.target.classList.contains('tp-mass')) transferPlasmids[idx].mass = parseFloat(e.target.value) || 0;
+                    calculateAll();
+                });
+            });
+        }
+
+        // Main Calculation Function
+        function calculateAll() {
+            // 1. Get Settings
+            const stdVol = parseFloat(DOM.stdVol.value) || 0.001; // prevent divide by zero
+            const targetVol = parseFloat(DOM.targetVol.value) || 0;
+            const stdOpti = parseFloat(DOM.stdOpti.value) || 0;
+            const stdReagent = parseFloat(DOM.stdReagent.value) || 0;
+
+            // 2. Base Scales
+            const scaleFactor = targetVol / stdVol;
+            const scaledOpti = stdOpti * scaleFactor;
+            const scaledReagent = stdReagent * scaleFactor;
+
+            // Update UI for Scales
+            DOM.scaleFactorDisplay.textContent = scaleFactor.toFixed(2);
+            DOM.scaledOptiDisplay.textContent = scaledOpti.toFixed(2);
+            DOM.scaledReagentDisplay.textContent = scaledReagent.toFixed(2);
+
+            // 3. Fixed Plasmids Volumes (Vol = Mass / Conc)
+            const paxConc = parseFloat(DOM.paxConc.value) || 1;
+            const paxMass = parseFloat(DOM.paxMass.value) || 0;
+            const paxVol = paxMass / paxConc;
+            DOM.paxVol.textContent = paxVol.toFixed(2);
+
+            const md2gConc = parseFloat(DOM.md2gConc.value) || 1;
+            const md2gMass = parseFloat(DOM.md2gMass.value) || 0;
+            const md2gVol = md2gMass / md2gConc;
+            DOM.md2gVol.textContent = md2gVol.toFixed(2);
+
+            // 4. Transfer Plasmids & Recipe Generation
+            const volDisplays = document.querySelectorAll('.tp-vol');
+            
+            DOM.recipesContainer.innerHTML = ''; // Clear existing recipes
+
+            transferPlasmids.forEach((tp, index) => {
+                // Calc Transfer Plasmid Vol
+                const tpConc = tp.conc || 1;
+                const tpVol = tp.mass / tpConc;
+                
+                if(volDisplays[index]) {
+                    volDisplays[index].textContent = tpVol.toFixed(2);
+                }
+
+                // Calc Final Opti-MEM to add
+                // Equation: Total Base OptiMEM - (Packaging + Envelope + Transfer + Reagent)
+                const optiToAdd = scaledOpti - (paxVol + md2gVol + tpVol + scaledReagent);
+
+                // Build Recipe Card
+                const cardHTML = `
+                    <div class="bg-white rounded-xl shadow-sm border-t-4 border-blue-500 p-5 flex flex-col h-full relative overflow-hidden">
+                        
+                        <h3 class="font-bold text-lg text-slate-800 mb-4 pb-2 border-b border-slate-100 truncate" title="${tp.name}">
+                            ${tp.name}
+                        </h3>
+                        
+                        <div class="space-y-2 flex-grow">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-600">Opti-MEM</span>
+                                <span class="font-semibold text-slate-900">${Math.max(0, optiToAdd).toFixed(2)} µl</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-600">psPAX2 (Packaging)</span>
+                                <span class="font-semibold text-slate-900">${paxVol.toFixed(2)} µl</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-600">pMD2.G (Envelope)</span>
+                                <span class="font-semibold text-slate-900">${md2gVol.toFixed(2)} µl</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-600 truncate mr-2" title="${tp.name} (Transfer)">${tp.name} (Transfer)</span>
+                                <span class="font-semibold text-blue-600">${tpVol.toFixed(2)} µl</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm pt-2 border-t border-dashed border-slate-200">
+                                <span class="text-slate-600">Transfection Reagent</span>
+                                <span class="font-semibold text-orange-600">${scaledReagent.toFixed(2)} µl</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center bg-slate-50 -mx-5 -mb-5 px-5 py-3">
+                            <span class="font-medium text-slate-700">Total Volume</span>
+                            <span class="font-bold text-lg text-slate-900">${scaledOpti.toFixed(2)} µl</span>
+                        </div>
+                    </div>
+                `;
+                DOM.recipesContainer.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+
+        // Just update labels in recipes if names change (without triggering full math recalc)
+        function renderRecipes() {
+            calculateAll();
+        }
+
+        // Attach global listeners for static inputs
+        document.querySelectorAll('.calc-trigger').forEach(input => {
+            input.addEventListener('input', calculateAll);
+        });
+
+        // Initial Setup
+        renderTransferRows();
+
+    </script>
+</body>
+</html>
